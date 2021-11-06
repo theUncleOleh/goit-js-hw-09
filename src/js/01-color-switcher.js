@@ -7,8 +7,8 @@ const refs = {
 let timerId = null;
 
 
-console.log(refs.startBtn);
-console.log(refs.stopBtn);
+// console.log(refs.startBtn);
+// console.log(refs.stopBtn);
 
 refs.startBtn.addEventListener('click', handleStartBtnClick)
 refs.stopBtn.addEventListener('click', handleStopBtnClick)
