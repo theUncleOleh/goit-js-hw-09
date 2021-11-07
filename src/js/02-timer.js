@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 
 const refs = {
     input : document.querySelector('#datetime-picker'),
@@ -10,21 +11,21 @@ const refs = {
     dataSeconds : document.querySelector('span[data-seconds]'),
 };
 
-let todayTime = null;
+const todayTime = Date.now();
 let selectTime = null;
 refs.startBtn.addEventListener('click', handleStartBtnClick);
 
 function handleStartBtnClick(evt) {
      setTimeout(() => {
-        todayTime = Date.now();
+        
 const currentTime = selectTime - todayTime;
 const time = convertMs(currentTime);
 console.log(time);
 
-refs.dataDays.textContent = time.days;
-refs.dataHours.textContent = time.hours;
-refs.dataMinutes.textContent = time.minutes;
-refs.dataSeconds.textContent = time.seconds;
+refs.dataDays.textContent = addLeadingZero(time.days);
+refs.dataHours.textContent = addLeadingZero(time.hours);
+refs.dataMinutes.textContent = addLeadingZero(time.minutes);
+refs.dataSeconds.textContent = addLeadingZero(time.seconds);
 }, 1000)
     
 };
@@ -37,13 +38,13 @@ function convertMs(currentTime) {
     const day = hour * 24;
   
     // Remaining days
-    const days = Math.floor(currentTime / day);
+    const days = addLeadingZero(Math.floor(currentTime / day));
     // Remaining hours
-    const hours = Math.floor((currentTime % day) / hour);
+    const hours = addLeadingZero(Math.floor((currentTime % day) / hour));
     // Remaining minutes
-    const minutes = Math.floor(((currentTime % day) % hour) / minute);
+    const minutes = addLeadingZero(Math.floor(((currentTime % day) % hour) / minute));
     // Remaining seconds
-    const seconds = Math.floor((((currentTime % day) % hour) % minute) / second);
+    const seconds = addLeadingZero(Math.floor((((currentTime % day) % hour) % minute) / second));
   
     return { days, hours, minutes, seconds };
   }
@@ -58,14 +59,19 @@ const dataFlatpickr = flatpickr('#datetime-picker', {
     onClose(selectedDates) {
 selectTime = selectedDates[0];
         if(selectTime < todayTime){
-            window.alert("Please choose a date in the future");
+            Notiflix.Notify.warning('Please choose a date in the future');
             refs.startBtn.setAttribute("disabled", "disabled");
         }
         {
-refs.startBtn.removeAttribute("disabled");
+        refs.startBtn.removeAttribute("disabled");
         }
-      
 }
 });
+
+function addLeadingZero(value) {
+    return String(value).padStart(2, '0');
+}
+
+
 
 
