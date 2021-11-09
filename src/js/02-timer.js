@@ -13,19 +13,27 @@ const refs = {
 let timerId = null;
 let todayTime = null;
 let selectTime = null;
+
 refs.startBtn.addEventListener('click', handleStartBtnClick);
 refs.startBtn.setAttribute("disabled", "disabled");
+
 function handleStartBtnClick(evt) {
-   timerId =  setInterval(() => {
-       todayTime = Date.now();
-const currentTime = selectTime - todayTime;
-const time = convertMs(currentTime);
-console.log(time);
-updateTime (time);
-}, 1000)
+    
+timerId =  setInterval(() => {
+    todayTime = Date.now();
+    const   currentTime = selectTime - todayTime;
+            const time = convertMs(currentTime);
+                  console.log(time);
+                  updateTime (time);
+                  if(currentTime < 1000) {
+                    clearInterval( timerId );
+                    }
+          }, 1000);
+         
+   
 }
 
-function convertMs(currentTime) {
+function convertMs(time) {
     
     // Number of milliseconds per unit of time
     const second = 1000;
@@ -34,13 +42,13 @@ function convertMs(currentTime) {
     const day = hour * 24;
   
     // Remaining days
-    const days = addLeadingZero(Math.floor(currentTime / day));
+    const days = addLeadingZero(Math.floor(time / day));
     // Remaining hours
-    const hours = addLeadingZero(Math.floor((currentTime % day) / hour));
+    const hours = addLeadingZero(Math.floor((time % day) / hour));
     // Remaining minutes
-    const minutes = addLeadingZero(Math.floor(((currentTime % day) % hour) / minute));
+    const minutes = addLeadingZero(Math.floor(((time % day) % hour) / minute));
     // Remaining seconds
-    const seconds = addLeadingZero(Math.floor((((currentTime % day) % hour) % minute) / second));
+    const seconds = addLeadingZero(Math.floor((((time % day) % hour) % minute) / second));
   
     return { days, hours, minutes, seconds };
   }
@@ -56,12 +64,13 @@ const dataFlatpickr =
     onClose(selectedDates) {
 selectTime = selectedDates[0];
 
-        if(selectTime < Date.now()){
+        if(selectTime > Date.now()){
+            refs.startBtn.removeAttribute("disabled");
             
-            Notiflix.Notify.failure('Please choose a date in the future');
         } else
         {
-        refs.startBtn.removeAttribute("disabled");
+            Notiflix.Notify.failure('Please choose a date in the future');
+           refs.startBtn.setAttribute('disabled', 'disabled');
         }
         
 }

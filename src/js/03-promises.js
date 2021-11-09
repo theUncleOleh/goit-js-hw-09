@@ -41,6 +41,7 @@ createPromise(i, delay)
     Notiflix.Notify.failure (`❌ Rejected promise ${position} in ${delay}ms`);
   });
 }
+ 
 }
 
 
